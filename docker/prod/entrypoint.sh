@@ -6,6 +6,19 @@ set -e
 
 cd /var/www/html
 
+# Laravel's storage/framework/* and bootstrap/cache dirs are git-ignored, so they're
+# absent from the image (and from a fresh storage volume). Create them before any
+# artisan command boots the framework, or the Blade compiler aborts with
+# "Please provide a valid cache path."
+mkdir -p \
+    storage/framework/views \
+    storage/framework/cache/data \
+    storage/framework/sessions \
+    storage/logs \
+    bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
+chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+
 # Sync the built public/ into the volume shared with the Nginx container, so Nginx
 # can serve static assets directly. (The volume may start empty on first boot.)
 if [ -d /var/www/html/public ]; then
