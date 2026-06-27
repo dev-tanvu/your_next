@@ -2,6 +2,9 @@
     @php
         $defaultVariant = $product->getTypeInstance()->getDefaultVariant();
         $discountPercentage = $defaultVariant ? floatval($defaultVariant->discount_percentage ?: $defaultVariant->flash_sale_discount) : 0;
+        if ($discountPercentage <= 0 && $prices['regular']['price'] > 0) {
+            $discountPercentage = round((1 - $prices['final']['price'] / $prices['regular']['price']) * 100);
+        }
     @endphp
     <p
         class="regular-price font-medium text-zinc-500 line-through max-sm:leading-4"

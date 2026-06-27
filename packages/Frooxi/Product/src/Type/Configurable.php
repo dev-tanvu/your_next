@@ -374,9 +374,13 @@ class Configurable extends AbstractType
             return null;
         }
 
-        // Return first variant that has a discount (either discount field)
+        // Return first variant that has a discount (special_price set, or a discount %)
         foreach ($variants as $variant) {
-            if (($variant->discount_percentage ?: $variant->flash_sale_discount) > 0) {
+            $hasSpecial = $variant->special_price !== null
+                && (float) $variant->special_price > 0
+                && (float) $variant->special_price < (float) $variant->price;
+
+            if ($hasSpecial || ($variant->discount_percentage ?: $variant->flash_sale_discount) > 0) {
                 return $variant;
             }
         }
@@ -395,7 +399,11 @@ class Configurable extends AbstractType
     {
         $defaultVariant = $this->getDefaultVariant();
         if ($defaultVariant) {
-            return ($defaultVariant->discount_percentage ?: $defaultVariant->flash_sale_discount) > 0;
+            $hasSpecial = $defaultVariant->special_price !== null
+                && (float) $defaultVariant->special_price > 0
+                && (float) $defaultVariant->special_price < (float) $defaultVariant->price;
+
+            return $hasSpecial || ($defaultVariant->discount_percentage ?: $defaultVariant->flash_sale_discount) > 0;
         }
 
         return false;
@@ -414,7 +422,10 @@ class Configurable extends AbstractType
             $regularPrice = core()->convertPrice($defaultVariant->price);
             $finalPrice = $regularPrice;
 
-            if ($this->haveDiscount()) {
+            $specialPrice = $defaultVariant->special_price;
+            if ($specialPrice !== null && (float) $specialPrice > 0 && (float) $specialPrice < (float) $defaultVariant->price) {
+                $finalPrice = core()->convertPrice($specialPrice);
+            } elseif ($this->haveDiscount()) {
                 $discountPercentage = $defaultVariant->discount_percentage ?: $defaultVariant->flash_sale_discount;
                 $finalPrice = round($regularPrice * (1 - floatval($discountPercentage) / 100), 4);
             }

@@ -1,6 +1,9 @@
 @if ($prices['final']['price'] < $prices['regular']['price'])
     @php
         $discountPercentage = floatval($product->discount_percentage ?: $product->flash_sale_discount);
+        if ($discountPercentage <= 0 && $prices['regular']['price'] > 0) {
+            $discountPercentage = round((1 - $prices['final']['price'] / $prices['regular']['price']) * 100);
+        }
     @endphp
     <p
         class="final-price font-medium text-zinc-500 line-through max-sm:leading-4"

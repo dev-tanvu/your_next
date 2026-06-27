@@ -726,7 +726,15 @@ abstract class AbstractType
      */
     public function haveDiscount($qty = null)
     {
-        // Treat the two historical discount fields as one effective discount.
+        $regularPrice = (float) $this->product->price;
+        $specialPrice = $this->product->special_price;
+
+        // The saved special_price is the source of truth (set from the discount % on save).
+        if ($specialPrice !== null && (float) $specialPrice > 0 && (float) $specialPrice < $regularPrice) {
+            return true;
+        }
+
+        // Fallback to the discount-percentage fields if special_price wasn't set.
         $discountPercentage = $this->product->discount_percentage ?: $this->product->flash_sale_discount;
 
         return ! empty($discountPercentage) && floatval($discountPercentage) > 0;
@@ -740,11 +748,18 @@ abstract class AbstractType
     public function getProductPrices()
     {
         $regularPrice = core()->convertPrice($this->product->price);
-        $discountPercentage = $this->product->discount_percentage ?: $this->product->flash_sale_discount;
-
         $finalPrice = $regularPrice;
-        if (! empty($discountPercentage) && floatval($discountPercentage) > 0) {
-            $finalPrice = round($regularPrice * (1 - floatval($discountPercentage) / 100), 4);
+
+        // Prefer the saved special_price (set from the discount % when the product is saved),
+        // so the detail page matches the card/cart. Fall back to the discount-percentage fields.
+        $specialPrice = $this->product->special_price;
+        if ($specialPrice !== null && (float) $specialPrice > 0 && (float) $specialPrice < (float) $this->product->price) {
+            $finalPrice = core()->convertPrice($specialPrice);
+        } else {
+            $discountPercentage = $this->product->discount_percentage ?: $this->product->flash_sale_discount;
+            if (! empty($discountPercentage) && floatval($discountPercentage) > 0) {
+                $finalPrice = round($regularPrice * (1 - floatval($discountPercentage) / 100), 4);
+            }
         }
 
         return [
