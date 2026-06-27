@@ -28,7 +28,9 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 COPY packages ./packages
 # Path-repository packages must be present before install resolves them.
-RUN composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader --no-interaction
+# The runtime image (stage 3) provides gd/intl/bcmath/calendar/pdo_mysql; this minimal
+# composer image doesn't, so skip the platform check here (deps are resolved from the lock).
+RUN composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader --no-interaction --ignore-platform-reqs
 
 # ---------------------------------------------------------------------------
 # Stage 3: final runtime — PHP-FPM + extensions + app + built artifacts
