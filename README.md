@@ -35,6 +35,10 @@ routes/                 Root Laravel route files. Package routes are loaded by p
 
 ## Quick start with Docker
 
+This project provides two Docker Compose flavors:
+- **Development** (`docker-compose.dev.yml`): Includes Mailpit, Adminer, and mounts local files for hot-reloading.
+- **Production** (`docker-compose.prod.yml`): Optimized for deployment (see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for details).
+
 Copy the environment file and set the database values first:
 
 ```bash
