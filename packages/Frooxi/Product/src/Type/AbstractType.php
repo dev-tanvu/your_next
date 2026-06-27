@@ -726,7 +726,8 @@ abstract class AbstractType
      */
     public function haveDiscount($qty = null)
     {
-        $discountPercentage = $this->product->discount_percentage;
+        // Treat the two historical discount fields as one effective discount.
+        $discountPercentage = $this->product->discount_percentage ?: $this->product->flash_sale_discount;
 
         return ! empty($discountPercentage) && floatval($discountPercentage) > 0;
     }
@@ -739,7 +740,7 @@ abstract class AbstractType
     public function getProductPrices()
     {
         $regularPrice = core()->convertPrice($this->product->price);
-        $discountPercentage = $this->product->discount_percentage;
+        $discountPercentage = $this->product->discount_percentage ?: $this->product->flash_sale_discount;
 
         $finalPrice = $regularPrice;
         if (! empty($discountPercentage) && floatval($discountPercentage) > 0) {

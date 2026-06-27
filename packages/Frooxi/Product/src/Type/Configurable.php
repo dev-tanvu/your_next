@@ -374,9 +374,9 @@ class Configurable extends AbstractType
             return null;
         }
 
-        // Return first variant that has a discount
+        // Return first variant that has a discount (either discount field)
         foreach ($variants as $variant) {
-            if ($variant->discount_percentage > 0) {
+            if (($variant->discount_percentage ?: $variant->flash_sale_discount) > 0) {
                 return $variant;
             }
         }
@@ -395,7 +395,7 @@ class Configurable extends AbstractType
     {
         $defaultVariant = $this->getDefaultVariant();
         if ($defaultVariant) {
-            return $defaultVariant->discount_percentage > 0;
+            return ($defaultVariant->discount_percentage ?: $defaultVariant->flash_sale_discount) > 0;
         }
 
         return false;
@@ -415,7 +415,8 @@ class Configurable extends AbstractType
             $finalPrice = $regularPrice;
 
             if ($this->haveDiscount()) {
-                $finalPrice = round($regularPrice * (1 - floatval($defaultVariant->discount_percentage) / 100), 4);
+                $discountPercentage = $defaultVariant->discount_percentage ?: $defaultVariant->flash_sale_discount;
+                $finalPrice = round($regularPrice * (1 - floatval($discountPercentage) / 100), 4);
             }
 
             return [

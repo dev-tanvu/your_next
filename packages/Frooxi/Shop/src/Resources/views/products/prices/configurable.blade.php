@@ -1,7 +1,7 @@
 @if (isset($prices['final']) && $prices['final']['price'] < $prices['regular']['price'])
     @php
         $defaultVariant = $product->getTypeInstance()->getDefaultVariant();
-        $discountPercentage = $defaultVariant ? floatval($defaultVariant->discount_percentage) : 0;
+        $discountPercentage = $defaultVariant ? floatval($defaultVariant->discount_percentage ?: $defaultVariant->flash_sale_discount) : 0;
     @endphp
     <p
         class="regular-price font-medium text-zinc-500 line-through max-sm:leading-4"
