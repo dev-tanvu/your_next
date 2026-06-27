@@ -32,4 +32,4 @@ EXPOSE 8000
 # Source is mounted at runtime; install deps then boot the dev server.
 # storage/framework/* and bootstrap/cache are git-ignored (absent from a fresh clone),
 # so create them before booting or the Blade compiler aborts with "valid cache path".
-CMD ["sh", "-c", "mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/logs bootstrap/cache && composer install --no-interaction && php artisan serve --host=0.0.0.0 --port=8000"]
+CMD ["sh", "-c", "mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/logs bootstrap/cache && { composer install --no-interaction --no-progress || composer install --no-interaction --no-progress || composer install --no-interaction --prefer-source; } && php artisan serve --host=0.0.0.0 --port=8000"]
