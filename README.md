@@ -88,11 +88,8 @@ Use it only when you are ready for a fresh install. It calls `db:wipe` and `migr
 
 ## Documentation
 
-Start with [docs/README.md](docs/README.md).
-
 | Document | Purpose |
 | --- | --- |
-| [docs/README.md](docs/README.md) | Handover index and current feature surface |
 | [docs/SETUP_AND_DEPLOYMENT.md](docs/SETUP_AND_DEPLOYMENT.md) | Local setup, environment variables, build commands, and install notes |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Package architecture, request flow, auth, cart flow, and frontend builds |
 | [docs/PACKAGES.md](docs/PACKAGES.md) | What each package does in this codebase |
