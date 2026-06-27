@@ -39,8 +39,8 @@ FROM php:8.3-fpm-bookworm AS runtime
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libicu-dev libonig-dev libzip-dev libpng-dev libjpeg-dev \
-        libfreetype6-dev libcurl4-openssl-dev libxml2-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+        libfreetype6-dev libcurl4-openssl-dev libxml2-dev libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" \
         pdo_mysql mbstring bcmath intl zip gd exif calendar opcache pcntl \
     && rm -rf /var/lib/apt/lists/*

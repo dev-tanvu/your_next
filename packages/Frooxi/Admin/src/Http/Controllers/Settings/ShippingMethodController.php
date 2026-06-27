@@ -64,6 +64,10 @@ class ShippingMethodController extends Controller
      */
     public function store(): JsonResponse
     {
+        // A toggle/checkbox submits nothing when "off", so normalize it to 0/1
+        // before validation — otherwise saving a disabled method fails as "required".
+        request()->merge(['status' => request()->boolean('status') ? 1 : 0]);
+
         $validator = Validator::make(request()->all(), [
             'name' => 'required',
             'price' => 'required|numeric|min:0',
@@ -113,6 +117,10 @@ class ShippingMethodController extends Controller
      */
     public function update(int $id): JsonResponse
     {
+        // A toggle/checkbox submits nothing when "off", so normalize it to 0/1
+        // before validation — otherwise saving a disabled method fails as "required".
+        request()->merge(['status' => request()->boolean('status') ? 1 : 0]);
+
         $validator = Validator::make(request()->all(), [
             'name' => 'required',
             'price' => 'required|numeric|min:0',

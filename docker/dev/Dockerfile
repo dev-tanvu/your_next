@@ -10,8 +10,8 @@ FROM php:8.3-cli-bookworm
 # --- System deps for the PHP extensions this app needs ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git unzip libicu-dev libonig-dev libzip-dev libpng-dev libjpeg-dev \
-        libfreetype6-dev libcurl4-openssl-dev libxml2-dev default-mysql-client \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+        libfreetype6-dev libcurl4-openssl-dev libxml2-dev libwebp-dev default-mysql-client \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" \
         pdo_mysql mbstring bcmath intl zip gd exif calendar pcntl \
     && rm -rf /var/lib/apt/lists/*
