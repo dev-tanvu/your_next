@@ -36,6 +36,8 @@ RUN composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader -
     || composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader --no-interaction --ignore-platform-reqs \
     || composer install --no-dev --no-scripts --prefer-source --optimize-autoloader --no-interaction --ignore-platform-reqs
 
+RUN rm -rf vendor/khaled.alshamaa/ar-php/docs
+
 # ---------------------------------------------------------------------------
 # Stage 3: final runtime — PHP-FPM + extensions + app + built artifacts
 # ---------------------------------------------------------------------------
